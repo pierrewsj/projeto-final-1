@@ -83,6 +83,16 @@
       font-size: 15px;
       color: #cfd8dc;
     }
+    .logout-btn {
+      margin-top: 10px;
+      background: #c62828;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -103,6 +113,12 @@
       } else {
         alert('Por favor, preencha nome e registro.');
       }
+    }
+
+    function logout() {
+      localStorage.removeItem('usuario_nome');
+      localStorage.removeItem('usuario_registro');
+      location.reload();
     }
 
     window.onload = function() {
@@ -133,6 +149,7 @@
   </div>
 
   <div id="user-info"></div>
+  <button class="logout-btn" onclick="logout()" id="logoutBtn" style="display:none;">Sair</button>
 
   <div id="interface">
     <div class="grid">
@@ -155,5 +172,12 @@
     </div>
     <div class="footer">STELLANTIS</div>
   </div>
+
+  <script>
+    // Mostrar botão de logout se o usuário estiver logado
+    if (localStorage.getItem('usuario_nome') && localStorage.getItem('usuario_registro')) {
+      document.getElementById('logoutBtn').style.display = 'inline-block';
+    }
+  </script>
 </body>
 </html>
