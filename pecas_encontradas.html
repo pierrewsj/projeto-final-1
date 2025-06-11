@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Peças Encontradas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+  function salvarTabelaLocalmente() {
+    const data = [];
+    const rows = table.parentElement.rows;
+    for (let i = 1; i < rows.length; i++) {
+      const row = [], cells = rows[i].cells;
+      for (let j = 0; j < cells.length; j++) {
+        const input = cells[j].querySelector('input, select');
+        row.push(input ? input.value : '');
+      }
+      data.push(row);
+    }
+    localStorage.setItem('tabelaPecas', JSON.stringify(data));
+  }
+
+  function carregarTabelaLocal() {
+    const savedData = JSON.parse(localStorage.getItem('tabelaPecas') || '[]');
+    if (savedData.length > 0) {
+      table.innerHTML = '';
+      savedData.forEach(rowData => {
+        const newRow = table.insertRow();
+        rowData.forEach((valor, index) => {
+          const cell = newRow.insertCell();
+          if (index === 4) { // Turno
+            const select = document.createElement('select');
+            ['Primeiro', 'Segundo', 'Terceiro'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else if (index === 5) { // Setor
+            const select = document.createElement('select');
+            ['Jit 04 - 72', 'Jit 04 - 73', 'Mecanismo G04', 'Pátio central de Embalagens G89',
+             'caixaria 08', 'Caixaria 89', 'Ilha Ecológica G38', 'Pátio de Sucatas G15', 'Outros'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else {
+            const input = document.createElement('input');
+            input.type = (index === 2) ? 'number' : 'text';  // Quantidade = numérico
+            input.readOnly = (index === 6); // Data e hora
+            input.value = valor;
+            input.style.width = '100%';
+            cell.appendChild(input);
+          }
+        });
+      });
+    }
+  }
+
+  // Atualiza localStorage sempre que houver mudanças
+  table.addEventListener('input', salvarTabelaLocalmente);
+  table.addEventListener('change', salvarTabelaLocalmente);
+
+  // Limpa localStorage ao exportar
+  function limparLocalStorage() {
+    localStorage.removeItem('tabelaPecas');
+  }
+
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+  function salvarTabelaLocalmente() {
+    const data = [];
+    const rows = table.parentElement.rows;
+    for (let i = 1; i < rows.length; i++) {
+      const row = [], cells = rows[i].cells;
+      for (let j = 0; j < cells.length; j++) {
+        const input = cells[j].querySelector('input, select');
+        row.push(input ? input.value : '');
+      }
+      data.push(row);
+    }
+    localStorage.setItem('tabelaPecas', JSON.stringify(data));
+  }
+
+  function carregarTabelaLocal() {
+    const savedData = JSON.parse(localStorage.getItem('tabelaPecas') || '[]');
+    if (savedData.length > 0) {
+      table.innerHTML = '';
+      savedData.forEach(rowData => {
+        const newRow = table.insertRow();
+        rowData.forEach((valor, index) => {
+          const cell = newRow.insertCell();
+          if (index === 4) { // Turno
+            const select = document.createElement('select');
+            ['Primeiro', 'Segundo', 'Terceiro'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else if (index === 5) { // Setor
+            const select = document.createElement('select');
+            ['Jit 04 - 72', 'Jit 04 - 73', 'Mecanismo G04', 'Pátio central de Embalagens G89',
+             'caixaria 08', 'Caixaria 89', 'Ilha Ecológica G38', 'Pátio de Sucatas G15', 'Outros'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else {
+            const input = document.createElement('input');
+            input.type = (index === 2) ? 'number' : 'text';  // Quantidade = numérico
+            input.readOnly = (index === 6); // Data e hora
+            input.value = valor;
+            input.style.width = '100%';
+            cell.appendChild(input);
+          }
+        });
+      });
+    }
+  }
+
+  // Atualiza localStorage sempre que houver mudanças
+  table.addEventListener('input', salvarTabelaLocalmente);
+  table.addEventListener('change', salvarTabelaLocalmente);
+
+  // Limpa localStorage ao exportar
+  function limparLocalStorage() {
+    localStorage.removeItem('tabelaPecas');
+  }
+
+</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js">
+  function salvarTabelaLocalmente() {
+    const data = [];
+    const rows = table.parentElement.rows;
+    for (let i = 1; i < rows.length; i++) {
+      const row = [], cells = rows[i].cells;
+      for (let j = 0; j < cells.length; j++) {
+        const input = cells[j].querySelector('input, select');
+        row.push(input ? input.value : '');
+      }
+      data.push(row);
+    }
+    localStorage.setItem('tabelaPecas', JSON.stringify(data));
+  }
+
+  function carregarTabelaLocal() {
+    const savedData = JSON.parse(localStorage.getItem('tabelaPecas') || '[]');
+    if (savedData.length > 0) {
+      table.innerHTML = '';
+      savedData.forEach(rowData => {
+        const newRow = table.insertRow();
+        rowData.forEach((valor, index) => {
+          const cell = newRow.insertCell();
+          if (index === 4) { // Turno
+            const select = document.createElement('select');
+            ['Primeiro', 'Segundo', 'Terceiro'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else if (index === 5) { // Setor
+            const select = document.createElement('select');
+            ['Jit 04 - 72', 'Jit 04 - 73', 'Mecanismo G04', 'Pátio central de Embalagens G89',
+             'caixaria 08', 'Caixaria 89', 'Ilha Ecológica G38', 'Pátio de Sucatas G15', 'Outros'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else {
+            const input = document.createElement('input');
+            input.type = (index === 2) ? 'number' : 'text';  // Quantidade = numérico
+            input.readOnly = (index === 6); // Data e hora
+            input.value = valor;
+            input.style.width = '100%';
+            cell.appendChild(input);
+          }
+        });
+      });
+    }
+  }
+
+  // Atualiza localStorage sempre que houver mudanças
+  table.addEventListener('input', salvarTabelaLocalmente);
+  table.addEventListener('change', salvarTabelaLocalmente);
+
+  // Limpa localStorage ao exportar
+  function limparLocalStorage() {
+    localStorage.removeItem('tabelaPecas');
+  }
+
+</script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f6fa;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+    #addPieceBtn { background-color: #1e88e5; }
+    #exportPdfBtn { background-color: #d50000; }
+    #viewExcelBtn { background-color: #6a1b9a; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th { background-color: #eee; }
+  </style>
+</head>
+<body>
+
+<h2>Peças Encontradas</h2>
+
+<button id="addPieceBtn">Adicionar Peça</button>
+<button id="exportPdfBtn">Gerar PDF</button>
+<span id="saveIcon" style="display:none; font-size: 20px; color: green; margin-left: 10px;">✔️ Salvo</span>
+
+<button id="viewExcelBtn">Visualizar Planilha Excel</button>
+
+<button id="undoBtn" style="background-color: #ff9800;">Desfazer</button>
+
+
+<table id="pecasTable">
+  <thead>
+    <tr>
+      <th>Descrição da Peça</th>
+      <th>Desenho</th>
+      <th>Quantidade</th>
+      <th>Conferente</th>
+      <th>Turno</th>
+      <th>Setor</th>
+      <th>Data e hora</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const table = document.getElementById('pecasTable').getElementsByTagName('tbody')[0];
+
+  document.getElementById('addPieceBtn').onclick = function () {
+    const newRow = table.insertRow();
+
+    ['Descrição', 'Desenho', 'Quantidade', 'Conferente'].forEach((label) => {
+      const cell = newRow.insertCell();
+      const input = document.createElement('input');
+      input.type = (label === 'Quantidade') ? 'number' : 'text';
+      input.style.width = '100%';
+      cell.appendChild(input);
+    });
+
+    const turnoCell = newRow.insertCell();
+    const turnoSelect = document.createElement('select');
+    ['Primeiro', 'Segundo', 'Terceiro'].forEach(opcao => {
+      const option = document.createElement('option');
+      option.value = opcao;
+      option.text = opcao;
+      turnoSelect.appendChild(option);
+    });
+    turnoSelect.style.width = '100%';
+    turnoCell.appendChild(turnoSelect);
+
+    const setorCell = newRow.insertCell();
+    const setorSelect = document.createElement('select');
+    ['Jit 04 - 72', 'Jit 04 - 73', 'Mecanismo G04', 'Pátio central de Embalagens G89', 'caixaria 08', 'Caixaria 89', 'Ilha Ecológica G38', 'Pátio de Sucatas G15', '66AU', 'Outros'].forEach(opcao => {
+      const option = document.createElement('option');
+      option.value = opcao;
+      option.text = opcao;
+      setorSelect.appendChild(option);
+    });
+    setorSelect.style.width = '100%';
+    setorCell.appendChild(setorSelect);
+
+    const dataCell = newRow.insertCell();
+    const dataInput = document.createElement('input');
+    dataInput.type = 'text';
+    dataInput.readOnly = true;
+    dataInput.value = new Date().toLocaleString();
+    dataInput.style.width = '100%';
+    dataCell.appendChild(dataInput);
+  };
+
+  document.getElementById('exportPdfBtn').onclick = function () {
+    const rows = table.parentElement.rows;
+    const data = [];
+    for (let i = 1; i < rows.length; i++) {
+      const row = [], cells = rows[i].cells;
+      for (let j = 0; j < cells.length; j++) {
+        const input = cells[j].querySelector('input, select');
+        row.push(input ? input.value : cells[j].innerText);
+      }
+      data.push(row);
+    }
+
+    if (data.length === 0) {
+      alert("A tabela está vazia.");
+      return;
+    }
+
+    const doc = new window.jspdf.jsPDF();
+    doc.autoTable({
+      head: [['Descrição da Peça', 'Desenho', 'Quantidade', 'Conferente', 'Turno', 'Setor', 'Data e hora']],
+      body: data
+    });
+    doc.save("pecas_encontradas.pdf");
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([['Descrição da Peça', 'Desenho', 'Quantidade', 'Conferente', 'Turno', 'Setor', 'Data e hora'], ...data]);
+    XLSX.utils.book_append_sheet(wb, ws, "Peças");
+    XLSX.writeFile(wb, "pecas_encontradas.xlsx");
+
+    table.innerHTML = "";
+    limparLocalStorage();
+    
+    // Mostrar ícone de salvamento
+    const saveIcon = document.getElementById('saveIcon');
+    saveIcon.style.display = 'inline';
+    setTimeout(() => {
+      saveIcon.style.display = 'none';
+    }, 2000);
+
+    alert("Dados exportados para Excel e PDF gerado com sucesso!");
+  };
+
+  document.getElementById('viewExcelBtn').onclick = function () {
+    const rows = table.parentElement.rows;
+    let csvContent = "";
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].cells;
+      const row = [];
+      for (let j = 0; j < cells.length; j++) {
+        const input = cells[j].querySelector('input, select');
+        row.push(input ? input.value : cells[j].innerText);
+      }
+      csvContent += row.join(",") + "\n";
+    }
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  };
+
+  // Adiciona uma linha automaticamente ao carregar
+  document.addEventListener('DOMContentLoaded', () => {
+    carregarTabelaLocal();
+    document.getElementById('addPieceBtn').click();
+  });
+
+  function salvarTabelaLocalmente() {
+    const data = [];
+    const rows = table.parentElement.rows;
+    for (let i = 1; i < rows.length; i++) {
+      const row = [], cells = rows[i].cells;
+      for (let j = 0; j < cells.length; j++) {
+        const input = cells[j].querySelector('input, select');
+        row.push(input ? input.value : '');
+      }
+      data.push(row);
+    }
+    localStorage.setItem('tabelaPecas', JSON.stringify(data));
+  }
+
+  function carregarTabelaLocal() {
+    const savedData = JSON.parse(localStorage.getItem('tabelaPecas') || '[]');
+    if (savedData.length > 0) {
+      table.innerHTML = '';
+      savedData.forEach(rowData => {
+        const newRow = table.insertRow();
+        rowData.forEach((valor, index) => {
+          const cell = newRow.insertCell();
+          if (index === 4) { // Turno
+            const select = document.createElement('select');
+            ['Primeiro', 'Segundo', 'Terceiro'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else if (index === 5) { // Setor
+            const select = document.createElement('select');
+            ['Jit 04 - 72', 'Jit 04 - 73', 'Mecanismo G04', 'Pátio central de Embalagens G89',
+             'caixaria 08', 'Caixaria 89', 'Ilha Ecológica G38', 'Pátio de Sucatas G15', 'Outros'].forEach(opcao => {
+              const option = document.createElement('option');
+              option.value = opcao;
+              option.text = opcao;
+              if (valor === opcao) option.selected = true;
+              select.appendChild(option);
+            });
+            select.style.width = '100%';
+            cell.appendChild(select);
+          } else {
+            const input = document.createElement('input');
+            input.type = (index === 2) ? 'number' : 'text';  // Quantidade = numérico
+            input.readOnly = (index === 6); // Data e hora
+            input.value = valor;
+            input.style.width = '100%';
+            cell.appendChild(input);
+          }
+        });
+      });
+    }
+  }
+
+  // Atualiza localStorage sempre que houver mudanças
+  table.addEventListener('input', salvarTabelaLocalmente);
+  table.addEventListener('change', salvarTabelaLocalmente);
+
+  // Limpa localStorage ao exportar
+  function limparLocalStorage() {
+    localStorage.removeItem('tabelaPecas');
+  }
+
+</script>
+
+
+<script>
+let ultimaTabela = null;
+
+function salvarEstadoAnterior() {
+  ultimaTabela = table.innerHTML;
+}
+
+function ativarEdicaoOutros(selectElement) {
+  if (selectElement.value === "Outros") {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = "Digite o setor";
+    input.style.width = '100%';
+    input.value = "";
+    selectElement.parentNode.replaceChild(input, selectElement);
+    input.focus();
+    input.addEventListener('input', salvarTabelaLocalmente);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll("select").forEach(select => {
+    if (select.parentElement.cellIndex === 5) {
+      select.addEventListener("change", function () {
+        salvarEstadoAnterior();
+        ativarEdicaoOutros(this);
+      });
+    }
+  });
+
+  const botao = document.getElementById('addPieceBtn');
+  const originalClick = botao.onclick;
+  botao.onclick = function () {
+    salvarEstadoAnterior();
+    originalClick();
+    const novaLinha = table.lastElementChild;
+    if (novaLinha && novaLinha.cells[5]) {
+      const selectSetor = novaLinha.cells[5].querySelector("select");
+      if (selectSetor) {
+        selectSetor.addEventListener("change", function () {
+          salvarEstadoAnterior();
+          ativarEdicaoOutros(this);
+        });
+      }
+    }
+  };
+
+  document.getElementById('undoBtn').addEventListener('click', () => {
+    if (ultimaTabela !== null) {
+      table.innerHTML = ultimaTabela;
+      salvarTabelaLocalmente();
+      alert("Ação desfeita.");
+    } else {
+      alert("Nenhuma ação para desfazer.");
+    }
+  });
+});
+</script>
+
+</body>
+</html>
