@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Peças Encontradas</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+<meta charset="utf-8"/>
+<title>Peças Encontradas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
   function salvarTabelaLocalmente() {
     const data = [];
     const rows = table.parentElement.rows;
@@ -72,7 +73,7 @@
   }
 
 </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
   function salvarTabelaLocalmente() {
     const data = [];
     const rows = table.parentElement.rows;
@@ -141,7 +142,7 @@
   }
 
 </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js">
   function salvarTabelaLocalmente() {
     const data = [];
     const rows = table.parentElement.rows;
@@ -210,7 +211,7 @@
   }
 
 </script>
-  <style>
+<style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f6fa;
@@ -247,33 +248,26 @@
   </style>
 </head>
 <body>
-
 <h2>Peças Encontradas</h2>
-
 <button id="addPieceBtn">Adicionar Peça</button>
 <button id="exportPdfBtn">Gerar PDF</button>
 <span id="saveIcon" style="display:none; font-size: 20px; color: green; margin-left: 10px;">✔️ Salvo</span>
-
 <button id="viewExcelBtn">Visualizar Planilha Excel</button>
-
 <button id="undoBtn" style="background-color: #ff9800;">Desfazer</button>
-
-
 <table id="pecasTable">
-  <thead>
-    <tr>
-      <th>Descrição da Peça</th>
-      <th>Desenho</th>
-      <th>Quantidade</th>
-      <th>Conferente</th>
-      <th>Turno</th>
-      <th>Setor</th>
-      <th>Data e hora</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
+<thead>
+<tr>
+<th>Descrição da Peça</th>
+<th>Desenho</th>
+<th>Quantidade</th>
+<th>Conferente</th>
+<th>Turno</th>
+<th>Setor</th>
+<th>Data e hora</th>
+</tr>
+</thead>
+<tbody></tbody>
 </table>
-
 <script>
   const table = document.getElementById('pecasTable').getElementsByTagName('tbody')[0];
 
@@ -453,8 +447,6 @@
   }
 
 </script>
-
-
 <script>
 let ultimaTabela = null;
 
@@ -510,6 +502,40 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       alert("Nenhuma ação para desfazer.");
     }
+  });
+});
+</script>
+<script>
+window.onload = function() {
+    const nome = localStorage.getItem('usuario_nome');
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        if (input.placeholder && input.placeholder.toLowerCase().includes("conferente")) {
+            input.value = nome || "";
+        } else if (input.name && input.name.toLowerCase().includes("conferente")) {
+            input.value = nome || "";
+        }
+    });
+};
+        </script>
+<script>
+  const nomeUsuario = localStorage.getItem('usuario_nome') || '';
+  document.addEventListener('DOMContentLoaded', () => {
+    const camposConferente = document.querySelectorAll('[name="conferente"]');
+    camposConferente.forEach(campo => {
+      campo.value = nomeUsuario;
+    });
+  });
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const nome = localStorage.getItem('usuario_nome') || '';
+  const registro = localStorage.getItem('usuario_registro') || '';
+  const camposConferente = document.querySelectorAll('input[name="conferente"]');
+  camposConferente.forEach(campo => {
+    campo.value = nome + ' - ' + registro;
   });
 });
 </script>

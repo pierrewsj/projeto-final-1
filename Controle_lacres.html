@@ -101,7 +101,7 @@
         Número do Último Lacre: <span id="lastSeal">--</span><br/>
         Lacres contabilizados: <span id="totalLacres">0</span>
 </div>
-<label>Conferente Vigilância</label>
+<label>Conferente</label>
 <input id="inspectorName" required="" type="text"/>
 <label>Auxiliar Logística</label>
 <input id="logisticAssistant" required="" type="text"/>
@@ -173,7 +173,7 @@
         const numero = firstSeal + i;
         lacresAcumulados.push({
           'Número do Lacre': numero,
-          'Conferente Vigilância': inspector,
+          'Conferente': inspector,
           'Auxiliar Logística': assistant,
           'Turno': shift,
           'Data': formattedDate
@@ -303,7 +303,7 @@ function adicionarLacres() {
     } else {
       novosLacres.push({
         'Número do Lacre': numero,
-        'Conferente Vigilância': inspector,
+        'Conferente': inspector,
         'Auxiliar Logística': assistant,
         'Turno': shift,
         'Data': formattedDate
@@ -335,5 +335,40 @@ function desfazerUltimaAcao() {
   mostrarTabela();
   salvarAutomaticamente();
 }
-</script></body>
+</script><script>
+window.onload = function() {
+    const nome = localStorage.getItem('usuario_nome');
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => {
+        if (input.placeholder && input.placeholder.toLowerCase().includes("conferente")) {
+            input.value = nome || "";
+        } else if (input.name && input.name.toLowerCase().includes("conferente")) {
+            input.value = nome || "";
+        }
+    });
+};
+        </script>
+<script>
+  const nomeUsuario = localStorage.getItem('usuario_nome') || '';
+  document.addEventListener('DOMContentLoaded', () => {
+    const camposConferente = document.querySelectorAll('[name="conferente"]');
+    camposConferente.forEach(campo => {
+      campo.value = nomeUsuario;
+    });
+  });
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const nome = localStorage.getItem('usuario_nome') || '';
+  const registro = localStorage.getItem('usuario_registro') || '';
+  const camposConferente = document.querySelectorAll('input[name="conferente"]');
+  camposConferente.forEach(campo => {
+    campo.value = nome + ' - ' + registro;
+  });
+});
+</script>
+
+</body>
 </html>
