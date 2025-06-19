@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stellantis - Controle de Lacres</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cor-fundo: #0b1d30;
+    --cor-caixa: #1c2b3d;
+    --cor-primaria: #3366ff;
+    --cor-hover: #1a4ed8;
+    --cor-texto: #ffffff;
+    --cor-alerta: #f0ad4e;
+    --cor-erro: #ff4444;
+    --fonte: 'Inter', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--fonte);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    padding: 1rem;
+  }
+  .container {
+    max-width: 920px;
+    margin: auto;
+    background: var(--cor-caixa);
+    padding: 2rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  h1, h2, h3 { text-align: center; margin: 0; }
+  h1 { font-size: 2rem; color: var(--cor-texto); letter-spacing: 2px; }
+  h2 { font-size: 1.4rem; color: var(--cor-texto); opacity: 0.85; }
+  h3 { font-size: 1.2rem; color: var(--cor-primaria); opacity: 0.85; }
+  label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
+  }
+  input, select {
+    margin-top: 0.4rem;
+    padding: 0.7rem;
+    border: 1px solid #3366ff33;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #101d30;
+    color: #ffffff;
+  }
+  input:focus, select:focus { outline: 2px solid #3366ff; }
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  button {
+    background: var(--cor-primaria);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button:hover { background: var(--cor-hover); }
+  .auto-save-icon {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #55dd55;
+  }
+  .info {
+    font-weight: bold;
+    text-align: center;
+    color: var(--cor-alerta);
+  }
+  .warning {
+    color: var(--cor-erro);
+    font-size: 0.9rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+  th, td {
+    border: 1px solid #2e3c51;
+    padding: 0.6rem;
+    text-align: center;
+    color: var(--cor-texto);
+  }
+  th { background: #233246; color: var(--cor-primaria); }
+  @media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .button-group { flex-direction: column; }
+    button { width: 100%; justify-content: center; }
+    .auto-save-icon { text-align: center; margin-top: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+<h1 style="font-family: 'Orbitron', sans-serif; font-size: 2.2rem; letter-spacing: 6px; color: #00faff; font-weight: 800;">
+    STELLANTIS</h1>
+<h2 style="font-size: 1.3rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #00d2ff; opacity: 0.85; margin-top: 0.3rem;">
+Segurança Patrimonial</h2>
+<h3 style="font-size: 1.1rem; font-weight: 400; color: #ffffffcc; margin-bottom: 1rem;">
+Controle de Lacres</h3>
+<label>Setor:
+  <select id="setor">
+    <option value="G08">G08</option>
+    <option value="G89">G89</option>
+  </select>
+</label>
+<label>Turno:
+  <select id="turno">
+    <option value="1º">1º</option>
+    <option value="2º">2º</option>
+    <option value="3º">3º</option>
+  </select>
+</label>
+<label>Número do lacre:
+  <input id="numeroLacre" type="number"/>
+  <div class="warning" id="alertaRepetido"></div>
+</label>
+<label>Quantidade de lacres (máx. 100):
+  <input id="quantidadeLacres" type="number"/>
+  <div class="warning" id="alertaQuantidade"></div>
+</label>
+<label>Conferente/Registro:
+  <input id="conferente" type="text"/>
+</label>
+<label>Auxiliar:
+  <input id="auxiliar" type="text"/>
+</label>
+<div class="info" id="info"></div>
+<div class="auto-save-icon">💾 Salvamento automático</div>
+<div class="button-group">
+  <button type="button" onclick="adicionarLacres()">
+    <span>➕</span> Adicionar
+  </button>
+  <button type="button" onclick="gerarPlanilha()">
+    <span>📄</span> Gerar Excel
+  </button>
+  <button type="button" onclick="desfazerUltimo()">
+    <span>↩️</span> Desfazer
+  </button>
+  <button type="button" onclick="desfazerTudo()">
+    <span>🗑️</span> Desfazer Tudo
+  </button>
+  <button type="button" onclick="finalizarTurno()">
+    <span>✅</span> Finalizar Turno
+  </button>
+  <button type="button" class="toggleTable" onclick="toggleTable()">
+    <span>📊</span> Mostrar Tabela
+  </button>
+</div>
+<table id="tabelaLacres">
+<thead>
+<tr>
+<th>Setor</th>
+<th>Turno</th>
+<th>N° Lacre</th>
+<th>Conferente</th>
+<th>Auxiliar</th>
+<th>Data e Hora</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+<script>
+(function(){
+  let lacres = JSON.parse(localStorage.getItem("lacres") || "[]", true);
+  function saveState(){
+    localStorage.setItem("lacres", JSON.stringify(lacres));
+    ["setor","turno","numeroLacre","quantidadeLacres","conferente","auxiliar"].forEach(id=>{
+      localStorage.setItem(id, document.getElementById(id).value || "", true);
+    });
+    localStorage.setItem("tabelaVisivel", document.getElementById("tabelaLacres").style.display === "table", true);
+  }
+  ["setor","turno","numeroLacre","quantidadeLacres","conferente","auxiliar"].forEach(id=>{
+    document.getElementById(id).addEventListener("change", saveState);
+  });
+  window.addEventListener("beforeunload", saveState);
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    ["setor","turno","numeroLacre","quantidadeLacres","conferente","auxiliar"].forEach(id=>{
+      const val = localStorage.getItem(id);
+      if(val) document.getElementById(id).value = val;
+    });
+    if(localStorage.getItem("lacres")){
+      lacres = JSON.parse(localStorage.getItem("lacres"));
+    }
+    atualizarTabela();
+    const vis = localStorage.getItem("tabelaVisivel") === "true";
+    document.getElementById("tabelaLacres").style.display = vis ? "table" : "none";
+  });
+
+  function atualizarTabela(){
+    const tbody = document.querySelector("#tabelaLacres tbody", true);
+    tbody.innerHTML = "";
+    lacres.forEach(item=>{
+      const tr = document.createElement("tr", true);
+      ["setor","turno","numeroLacre","conferente","auxiliar","dataHora"].forEach(key=>{
+        const td = document.createElement("td", true);
+        td.textContent = item[key] || "";
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    if(lacres.length){
+      const tr = document.createElement("tr", true);
+      tr.className = "totalizador";
+      const td = document.createElement("td", true);
+      td.colSpan = 6;
+      td.textContent = `Total de registros: ${lacres.length}`;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
+    const info = document.getElementById("info", true);
+    info.textContent = lacres.length
+      ? `Último lacre: ${lacres[lacres.length - 1].numeroLacre} | Total: ${lacres.length}`
+      : "";
+  }
+
+  function mostrarMensagemAcao(mensagem) {
+    const info = document.getElementById("info", true);
+    info.textContent = mensagem;
+    setTimeout(()=>{
+      info.textContent = lacres.length
+        ? `Último lacre: ${lacres[lacres.length - 1].numeroLacre} | Total: ${lacres.length}`
+        : "";
+    }, 3000);
+  }
+
+  function adicionarLacres(){
+    const setor = document.getElementById("setor").value.trim();
+    const turno = document.getElementById("turno").value.trim();
+    const numeroInicio = document.getElementById("numeroLacre").value.trim();
+    const quantidade = parseInt(document.getElementById("quantidadeLacres").value.trim(), 10);
+    const conferente = document.getElementById("conferente").value.trim();
+    const auxiliar = document.getElementById("auxiliar").value.trim();
+    const alertaRepetido = document.getElementById("alertaRepetido", true);
+    const alertaQuantidade = document.getElementById("alertaQuantidade", true);
+    alertaRepetido.textContent = "";
+    alertaQuantidade.textContent = "";
+    if(!setor || !turno || !numeroInicio || isNaN(quantidade) || quantidade < 1 || !conferente || !auxiliar){
+      alertaQuantidade.textContent = "Preencha todos os campos corretamente.";
+      return;
+    }
+    if(quantidade > 100){
+      alertaQuantidade.textContent = "Limite máximo de 100 lacres por vez.";
+      return;
+    }
+    const startNum = parseInt(numeroInicio, 10);
+    if(isNaN(startNum)){
+      alertaRepetido.textContent = "Número de lacre inicial inválido.";
+      return;
+    }
+    let repetidos = [], novos = [];
+    for(let i = 0; i < quantidade; i++){
+      const num = (startNum + i).toString();
+      if(lacres.find(l => l.numeroLacre === num)){
+        repetidos.push(num);
+      } else {
+        novos.push({ setor, turno, numeroLacre: num, conferente, auxiliar, dataHora: new Date().toLocaleString("pt-BR") });
+      }
+    }
+    if(repetidos.length){
+      alertaRepetido.textContent = `Números já utilizados: ${repetidos.join(", ")}`;
+    }
+    lacres = lacres.concat(novos);
+    saveState();
+    atualizarTabela();
+    mostrarMensagemAcao(`✅ ${novos.length} lacre(s) adicionado(s) com sucesso`);
+  }
+
+  function gerarPlanilha(){
+    if(!lacres.length){
+      mostrarModal("Nada para exportar", true);
+      return;
+    }
+    const wb = XLSX.utils.book_new();
+    const data = [["Setor","Turno","N° Lacre","Conferente","Auxiliar","Data e Hora"],
+      ...lacres.map(l => [l.setor, l.turno, l.numeroLacre, l.conferente, l.auxiliar, l.dataHora]),
+      [null, null, null, null, null, `Total: ${lacres.length}`]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws["!cols"] = [
+      {wch: 20}, {wch: 10}, {wch: 15}, {wch: 20}, {wch: 20}, {wch: 25}
+    ];
+
+    ws["!freeze"] = { ySplit: 1 };
+    ws["!freeze"] = { ySplit: 1 };
+    XLSX.utils.book_append_sheet(wb, ws, "Lacres", true);
+    XLSX.writeFile(wb, "controle_lacres.xlsx", true);
+    mostrarMensagemAcao("Arquivo Excel gerado com sucesso!", true);
+  }
+
+  function desfazerUltimo(){
+    if(!lacres.length) return;
+    lacres.pop();
+    saveState();
+    atualizarTabela();
+    mostrarMensagemAcao("Registro removido!", true);
+  }
+
+  function desfazerTudo(){
+    if(!lacres.length) return;
+    lacres = [];
+    saveState();
+    atualizarTabela();
+    mostrarMensagemAcao("Todos os registros foram removidos!", true);
+  }
+
+  function finalizarTurno(){
+    if(!confirm("Advertência: Ao finalizar o turno, todos os dados serão apagados. Deseja continuar?")) return;
+    lacres = [];
+    ["lacres","setor","turno","numeroLacre","quantidadeLacres","conferente","auxiliar","tabelaVisivel"]
+      .forEach(k => localStorage.removeItem(k));
+    saveState();
+    atualizarTabela();
+    ["setor","turno","numeroLacre","quantidadeLacres","conferente","auxiliar"]
+      .forEach(id => document.getElementById(id).value = "", true);
+    document.getElementById("tabelaLacres").style.display = "none";
+    document.querySelector(".toggleTable").textContent = "📊 Mostrar Tabela";
+    document.getElementById("info").textContent = "";
+  }
+
+  window.toggleTable = function() {
+    const tabela = document.getElementById("tabelaLacres", true);
+    const btn = document.querySelector(".toggleTable", true);
+    if(tabela.style.display === "table"){
+      tabela.style.display = "none";
+      btn.textContent = "📊 Mostrar Tabela";
+    } else {
+      tabela.style.display = "table";
+      btn.textContent = "🙈 Esconder Tabela";
+    }
+    saveState();
+  };
+
+  window.adicionarLacres = adicionarLacres;
+  window.gerarPlanilha = gerarPlanilha;
+  window.desfazerUltimo = desfazerUltimo;
+  window.desfazerTudo = desfazerTudo;
+  window.finalizarTurno = finalizarTurno;
+})();
+</script>
+
+<div id="modalCustom" class="modal-custom" style="display:none;">
+  <div class="modal-content-custom">
+    <button class="close-btn-custom" onclick="fecharModalCustom()">×</button>
+    <span id="modalCustomMsg"></span>
+  </div>
+</div>
+<style>
+.modal-custom {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15,30,44,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+.modal-content-custom {
+  background: #142536;
+  border-radius: 18px;
+  padding: 2.2rem 1.6rem 1.6rem 1.6rem;
+  text-align: center;
+  color: #fff;
+  min-width: 220px;
+  max-width: 90vw;
+  font-size: 1.1rem;
+  position: relative;
+}
+.modal-content-custom .close-btn-custom {
+  position: absolute; top: 8px; right: 14px;
+  background: none; border: none; color: #00d2ff;
+  font-size: 1.3rem; cursor: pointer;
+}
+.modal-content-custom .close-btn-custom:hover {
+  color: #ff4444;
+}
+</style>
+<script>
+function mostrarModal(msg, erro=false) {
+  const modal = document.getElementById("modalCustom", true);
+  const msgSpan = document.getElementById("modalCustomMsg", true);
+  modal.style.display = "flex";
+  msgSpan.textContent = msg;
+  msgSpan.style.color = erro ? "#ff4444" : "#00d2ff";
+}
+function fecharModalCustom() {
+  document.getElementById("modalCustom").style.display = "none";
+}
+</script>
+
+</body>
+</html>
